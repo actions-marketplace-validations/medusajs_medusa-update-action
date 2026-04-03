@@ -75,9 +75,15 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-    uses: medusajs/medusa-update-action@beta
-    secrets:
-      github-token: ${{ secrets.GITHUB_TOKEN }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Update Medusa
+        uses: medusajs/medusa-update-action@beta
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 If you have a monorepo where the storefront build depends on the backend, make sure to add the necessary environment variables:
@@ -93,15 +99,22 @@ on:
 
 jobs:
   update:
+    # Required for opening PRs
     permissions:
       contents: write
       pull-requests: write
+    runs-on: ubuntu-latest
     env:
       NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${{ secrets.MEDUSA_PUBLISHABLE_KEY }}
       NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${{ secrets.MEDUSA_BACKEND_URL }}
-    uses: medusajs/medusa-update-action@beta
-    secrets:
-      github-token: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Update Medusa
+        uses: medusajs/medusa-update-action@beta
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ### Result
@@ -139,10 +152,20 @@ Provide your Anthropic API key to enable automatic error fixing and breaking cha
 ```yaml
 jobs:
   update:
-    uses: medusajs/medusa-update-action@beta
-    secrets:
-      github-token: ${{ secrets.GITHUB_TOKEN }}
-      anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+    # Required for opening PRs
+    permissions:
+      contents: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Update Medusa
+        uses: medusajs/medusa-update-action@beta
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
 ```
 
 When Claude Code is enabled, if the build fails after the update **or** breaking changes are detected in the release notes, Claude will:
@@ -158,28 +181,37 @@ When Claude Code is enabled, if the build fails after the update **or** breaking
 ```yaml
 jobs:
   update:
-    uses: medusajs/medusa-update-action@beta
-    with:
-      # Base branch for the PR (default: "main")
-      base-branch: develop
+    # Required for opening PRs
+    permissions:
+      contents: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      # Prefix for the update branch name (default: "chore/update-medusa")
-      # Final branch: chore/update-medusa-2.14.0-1234567890
-      branch-prefix: deps/medusa
+      - name: Update Medusa
+        uses: medusajs/medusa-update-action@beta
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Base branch for the PR (default: "main")
+          base-branch: develop
 
-      # Root directory of the project (default: ".")
-      # Useful if your Medusa project is in a subdirectory
-      working-directory: backend
+          # Prefix for the update branch name (default: "chore/update-medusa")
+          # Final branch: chore/update-medusa-2.14.0-1234567890
+          branch-prefix: deps/medusa
 
-      # For monorepos: name of the directory containing workspace apps (default: "apps")
-      apps-directory: packages
+          # Root directory of the project (default: ".")
+          # Useful if your Medusa project is in a subdirectory
+          working-directory: backend
 
-      # Set to "false" to skip committing and opening a PR — useful when integrating
-      # into a custom workflow that handles those steps itself (default: "true")
-      create-pr: "false"
-    secrets:
-      github-token: ${{ secrets.GITHUB_TOKEN }}
-      anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # For monorepos: name of the directory containing workspace apps (default: "apps")
+          apps-directory: packages
+
+          # Set to "false" to skip committing and opening a PR — useful when integrating
+          # into a custom workflow that handles those steps itself (default: "true")
+          create-pr: "false"
 ```
 
 ## Inputs
@@ -211,7 +243,7 @@ jobs:
 
 ### Pass environment variables to the build
 
-If your build requires environment variables (e.g. a publishable API key for a storefront), use a regular job with `env:` instead of the reusable workflow. Job-level environment variables are available to all steps, including the action:
+If your build requires environment variables (e.g. a publishable API key for a storefront), pass `env:` to the job:
 
 ```yaml
 jobs:
@@ -239,17 +271,20 @@ If you want to run the update as part of a larger workflow and handle subsequent
 ```yaml
 jobs:
   update:
-    runs-on: ubuntu-latest
+    # Required for opening PRs
     permissions:
       contents: write
       pull-requests: write
+    runs-on: ubuntu-latest
     steps:
-      - uses: medusajs/medusa-update-action@beta
-        id: update
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Update Medusa
+        uses: medusajs/medusa-update-action@beta
         with:
-          create-pr: "false"
-        secrets:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          create-pr: "false"
 
       - name: Do something with the result
         run: echo "Updated to ${{ steps.update.outputs.updated-version }}"
@@ -264,19 +299,19 @@ To use an AI agent other than Claude Code, disable PR creation, let the action u
 ```yaml
 jobs:
   update:
-    runs-on: ubuntu-latest
+    # Required for opening PRs
     permissions:
       contents: write
       pull-requests: write
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - uses: medusajs/medusa-update-action@beta
         id: update
         with:
-          create-pr: "false"
-        secrets:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          create-pr: "false"
 
       - name: Run your AI agent
         if: steps.update.outputs.build-status == 'failed'
