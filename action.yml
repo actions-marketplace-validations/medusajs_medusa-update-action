@@ -196,5 +196,6 @@ runs:
         RELEASE_NOTES_URL: ${{ steps.setup.outputs.RELEASE_NOTES_URL }}
         BUILD_EXIT_CODE: ${{ steps.set-build-status.outputs.FINAL_BUILD_EXIT_CODE }}
         CLAUDE_FIX_STATUS: ${{ steps.set-build-status.outputs.CLAUDE_FIX_STATUS }}
+        CLAUDE_CONFIGURED: ${{ inputs.anthropic-api-key != '' && 'true' || 'false' }}
         UPDATE_BRANCH: ${{ steps.commit.outputs.UPDATE_BRANCH }}
       run: npx tsx ${{ github.action_path }}/src/create-pr.ts

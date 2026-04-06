@@ -46,8 +46,9 @@ export function buildPRBody(params: {
   buildExitCode: number;
   buildOutput: string;
   claudeFixStatus: string;
+  claudeConfigured: boolean;
 }): string {
-  const { version, releaseNotesUrl, releaseNotesBody, buildExitCode, buildOutput, claudeFixStatus } = params;
+  const { version, releaseNotesUrl, releaseNotesBody, buildExitCode, buildOutput, claudeFixStatus, claudeConfigured } = params;
 
   const buildSucceeded = buildExitCode === 0;
   const fixedByClaude = claudeFixStatus === "fixed";
@@ -60,7 +61,10 @@ export function buildPRBody(params: {
     buildSection = "✅ Build passed successfully after the update.";
   } else {
     const truncatedOutput = truncate(buildOutput, 4000);
-    buildSection = `❌ Build failed after the update. Please fix the errors below before merging.
+    const claudeHint = claudeConfigured
+      ? ""
+      : "\n\n> **Tip:** Add an `anthropic-api-key` input to your workflow to let Claude Code fix build errors automatically.";
+    buildSection = `❌ Build failed after the update. Please fix the errors below before merging.${claudeHint}
 
 <details>
 <summary>Build errors (click to expand)</summary>
@@ -111,6 +115,7 @@ function main(): void {
     `https://github.com/medusajs/medusa/releases/tag/v${version}`;
   const buildExitCode = parseInt(process.env.BUILD_EXIT_CODE || "0", 10);
   const claudeFixStatus = process.env.CLAUDE_FIX_STATUS || "skipped";
+  const claudeConfigured = process.env.CLAUDE_CONFIGURED === "true";
   const branchPrefix = process.env.BRANCH_PREFIX || "chore/update-medusa";
   const updateBranch = process.env.UPDATE_BRANCH || "";
   const baseBranch = process.env.BASE_BRANCH || "main";
@@ -120,7 +125,7 @@ function main(): void {
 
   closeStaleUpdatePRs(branchPrefix);
 
-  const prBody = buildPRBody({ version, releaseNotesUrl, releaseNotesBody, buildExitCode, buildOutput, claudeFixStatus });
+  const prBody = buildPRBody({ version, releaseNotesUrl, releaseNotesBody, buildExitCode, buildOutput, claudeFixStatus, claudeConfigured });
   const prTitle = `chore: update @medusajs/* to v${version}`;
 
   core.info(`\nCreating PR: "${prTitle}"`);

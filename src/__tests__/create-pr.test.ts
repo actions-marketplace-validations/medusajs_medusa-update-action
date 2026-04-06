@@ -7,6 +7,7 @@ const BASE_PARAMS = {
   buildExitCode: 0,
   buildOutput: "",
   claudeFixStatus: "skipped",
+  claudeConfigured: false,
 };
 
 describe("buildPRBody", () => {
@@ -87,6 +88,38 @@ describe("buildPRBody", () => {
 
     expect(body).toContain("truncated");
     expect(body).not.toContain("e".repeat(4001));
+  });
+
+  it("shows Claude setup hint when build failed and Claude is not configured", () => {
+    const body = buildPRBody({
+      ...BASE_PARAMS,
+      buildExitCode: 1,
+      claudeFixStatus: "skipped",
+      claudeConfigured: false,
+    });
+
+    expect(body).toContain("anthropic-api-key");
+  });
+
+  it("does not show Claude setup hint when Claude is already configured", () => {
+    const body = buildPRBody({
+      ...BASE_PARAMS,
+      buildExitCode: 1,
+      claudeFixStatus: "skipped",
+      claudeConfigured: true,
+    });
+
+    expect(body).not.toContain("anthropic-api-key");
+  });
+
+  it("does not show Claude setup hint when build passed", () => {
+    const body = buildPRBody({
+      ...BASE_PARAMS,
+      buildExitCode: 0,
+      claudeConfigured: false,
+    });
+
+    expect(body).not.toContain("anthropic-api-key");
   });
 
   it("includes the footer attribution link", () => {
