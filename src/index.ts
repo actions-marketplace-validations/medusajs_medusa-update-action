@@ -1,5 +1,15 @@
 import * as core from "@actions/core";
 import { detectSetup } from "./utils/detect-setup.js";
+
+// ncu opens HTTP connections to the npm registry. When they're aborted during
+// cleanup after the build runs, Node.js emits an unhandled 'error' event with
+// ECONNRESET. These are harmless — ignore them.
+process.on("uncaughtException", (err: NodeJS.ErrnoException) => {
+  if (err.code === "ECONNRESET") return;
+  core.setFailed(`Uncaught error: ${err}`);
+  process.exit(1);
+});
+
 import { checkTargetVersion } from "./utils/check-target-version.js";
 import { checkExistingPR } from "./utils/check-existing-pr.js";
 import { updatePackages } from "./utils/update-packages.js";
