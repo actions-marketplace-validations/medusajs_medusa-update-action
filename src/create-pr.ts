@@ -2,8 +2,8 @@ import * as fs from "fs";
 import { execSync, spawnSync } from "child_process";
 import * as core from "@actions/core";
 
-const BUILD_OUTPUT_FILE = "build-output.txt";
-const RELEASE_NOTES_FILE = "release-notes.md";
+const BUILD_OUTPUT_FILE = "/tmp/build-output.txt";
+const RELEASE_NOTES_FILE = "/tmp/release-notes.md";
 
 function readFile(filePath: string): string {
   try {

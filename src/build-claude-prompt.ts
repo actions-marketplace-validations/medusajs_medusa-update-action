@@ -1,8 +1,8 @@
 import * as fs from "fs";
 import * as core from "@actions/core";
 
-const RELEASE_NOTES_FILE = "release-notes.md";
-const BUILD_OUTPUT_FILE = "build-output.txt";
+const RELEASE_NOTES_FILE = "/tmp/release-notes.md";
+const BUILD_OUTPUT_FILE = "/tmp/build-output.txt";
 
 function readFile(filePath: string): string {
   try {

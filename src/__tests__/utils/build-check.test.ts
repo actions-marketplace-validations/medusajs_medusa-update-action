@@ -54,7 +54,7 @@ describe("runBuild", () => {
     const code = runBuild(ROOT, PM, SCRIPT);
 
     expect(code).toBe(0);
-    expect(mockWriteFileSync).toHaveBeenCalledWith("build-output.txt", "Build complete", "utf-8");
+    expect(mockWriteFileSync).toHaveBeenCalledWith("/tmp/build-output.txt", "Build complete", "utf-8");
     expect(mockSetOutput).toHaveBeenCalledWith("BUILD_EXIT_CODE", "0");
     expect(mockInfo).toHaveBeenCalledWith(expect.stringContaining("succeeded"));
   });

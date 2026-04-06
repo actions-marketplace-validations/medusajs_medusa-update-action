@@ -153,7 +153,7 @@ describe("fetchAndSaveReleaseNotes", () => {
     await fetchAndSaveReleaseNotes(CURRENT, TARGET);
 
     expect(mockWarning).toHaveBeenCalledWith(expect.stringContaining("403"));
-    expect(mockWriteFileSync).toHaveBeenCalledWith("release-notes.md", "(No release notes found)", "utf-8");
+    expect(mockWriteFileSync).toHaveBeenCalledWith("/tmp/release-notes.md", "(No release notes found)", "utf-8");
     expect(mockSetOutput).toHaveBeenCalledWith("RELEASE_NOTES_URL", `https://github.com/medusajs/medusa/releases/tag/v${TARGET}`);
   });
 
@@ -163,7 +163,7 @@ describe("fetchAndSaveReleaseNotes", () => {
     await fetchAndSaveReleaseNotes(CURRENT, TARGET);
 
     expect(mockWarning).toHaveBeenCalledWith(expect.stringContaining("network error"));
-    expect(mockWriteFileSync).toHaveBeenCalledWith("release-notes.md", "", "utf-8");
+    expect(mockWriteFileSync).toHaveBeenCalledWith("/tmp/release-notes.md", "", "utf-8");
     expect(mockSetOutput).toHaveBeenCalledWith("HAS_BREAKING_CHANGES", "false");
   });
 
@@ -172,6 +172,6 @@ describe("fetchAndSaveReleaseNotes", () => {
 
     await fetchAndSaveReleaseNotes(CURRENT, TARGET);
 
-    expect(mockWriteFileSync).toHaveBeenCalledWith("release-notes.md", "(No release notes found)", "utf-8");
+    expect(mockWriteFileSync).toHaveBeenCalledWith("/tmp/release-notes.md", "(No release notes found)", "utf-8");
   });
 });

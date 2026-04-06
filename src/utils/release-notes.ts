@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as core from "@actions/core";
 
-const RELEASE_NOTES_FILE = "release-notes.md";
+const RELEASE_NOTES_FILE = "/tmp/release-notes.md";
 
 interface GitHubRelease {
   tag_name: string;

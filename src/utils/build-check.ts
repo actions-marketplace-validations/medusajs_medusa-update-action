@@ -2,7 +2,7 @@ import * as fs from "fs";
 import { spawnSync } from "child_process";
 import * as core from "@actions/core";
 
-const BUILD_OUTPUT_FILE = "build-output.txt";
+const BUILD_OUTPUT_FILE = "/tmp/build-output.txt";
 
 export function runBuild(rootDir: string, packageManager: string, buildScriptName: string): number {
   core.info(`Running build command: ${packageManager} run ${buildScriptName}`);
