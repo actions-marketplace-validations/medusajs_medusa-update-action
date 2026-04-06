@@ -16,7 +16,7 @@ function detectBreakingChanges(text: string): boolean {
 async function fetchReleaseNotesSince(currentVersion: string, targetVersion: string): Promise<GitHubRelease[]> {
   const collected: GitHubRelease[] = [];
   let page = 1;
-  const MAX_PAGES = 10;
+  const MAX_PAGES = 20;
   let foundTarget = false;
   let foundCurrent = false;
 
@@ -28,17 +28,27 @@ async function fetchReleaseNotesSince(currentVersion: string, targetVersion: str
   if (token) headers["Authorization"] = `Bearer ${token}`;
 
   while (page <= MAX_PAGES && !foundCurrent) {
-    const response = await fetch(
-      `https://api.github.com/repos/medusajs/medusa/releases?per_page=10&page=${page}`,
-      { headers }
-    );
+    let response: Response | undefined;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        response = await fetch(
+          `https://api.github.com/repos/medusajs/medusa/releases?per_page=5&page=${page}`,
+          { headers }
+        );
+        break;
+      } catch (fetchErr) {
+        if (attempt === 3) throw fetchErr;
+        core.info(`Release notes fetch attempt ${attempt} failed, retrying... (${fetchErr})`);
+        await new Promise((r) => setTimeout(r, attempt * 1000));
+      }
+    }
 
-    if (!response.ok) {
-      core.warning(`Could not fetch releases (HTTP ${response.status}). Continuing without release notes.`);
+    if (!response!.ok) {
+      core.warning(`Could not fetch releases (HTTP ${response!.status}). Continuing without release notes.`);
       break;
     }
 
-    const releases = (await response.json()) as GitHubRelease[];
+    const releases = (await response!.json()) as GitHubRelease[];
     if (releases.length === 0) break;
 
     for (const release of releases) {

@@ -119,6 +119,12 @@ runs:
         plugins: "medusa-dev@medusa"
 
     # ── Step 4: Re-run build after Claude ────────────────────────────────
+    - name: Setup Node.js (re-run build)
+      if: steps.claude.outcome == 'success'
+      uses: actions/setup-node@v4
+      with:
+        node-version: "24"
+
     - name: Re-run build after Claude
       id: rebuild
       if: steps.claude.outcome == 'success'
