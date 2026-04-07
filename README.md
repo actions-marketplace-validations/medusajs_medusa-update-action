@@ -34,7 +34,7 @@
   </a>
 </p>
 
-# medusa-update-action
+# Medusa Update Action
 
 A GitHub Action (reusable workflow) that automatically keeps your `@medusajs/*` packages up-to-date and opens a pull request with the changes.
 
