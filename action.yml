@@ -1,4 +1,4 @@
-name: Update Medusa
+name: Update Medusa Projects (Official)
 description: Bump @medusajs/* packages, verify the build, optionally fix errors with Claude Code, and open a PR.
 branding:
   icon: refresh-cw
