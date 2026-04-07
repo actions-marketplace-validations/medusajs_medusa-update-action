@@ -81,7 +81,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Update Medusa
-        uses: medusajs/medusa-update-action@main
+        uses: medusajs/medusa-update-action@v1.0.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -112,7 +112,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Update Medusa
-        uses: medusajs/medusa-update-action@main
+        uses: medusajs/medusa-update-action@v1.0.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -162,7 +162,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Update Medusa
-        uses: medusajs/medusa-update-action@main
+        uses: medusajs/medusa-update-action@v1.0.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -191,7 +191,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Update Medusa
-        uses: medusajs/medusa-update-action@main
+        uses: medusajs/medusa-update-action@v1.0.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -262,7 +262,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: medusajs/medusa-update-action@main
+      - uses: medusajs/medusa-update-action@v1.0.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -284,7 +284,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Update Medusa
-        uses: medusajs/medusa-update-action@main
+        uses: medusajs/medusa-update-action@v1.0.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           create-pr: "false"
@@ -318,7 +318,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: medusajs/medusa-update-action@main
+      - uses: medusajs/medusa-update-action@v1.0.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           target-version: ${{ inputs.version }}
@@ -339,7 +339,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: medusajs/medusa-update-action@main
+      - uses: medusajs/medusa-update-action@v1.0.0
         id: update
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -376,14 +376,14 @@ jobs:
           fetch-depth: 0
 
       - name: Update US backend
-        uses: medusajs/medusa-update-action@main
+        uses: medusajs/medusa-update-action@v1.0.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           working-directory: backend-us
           branch-prefix: chore/update-medusa-us
 
       - name: Update EU backend
-        uses: medusajs/medusa-update-action@main
+        uses: medusajs/medusa-update-action@v1.0.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           working-directory: backend-eu

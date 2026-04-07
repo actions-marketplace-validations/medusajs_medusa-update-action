@@ -2,7 +2,7 @@ name: Update Medusa
 description: Bump @medusajs/* packages, verify the build, optionally fix errors with Claude Code, and open a PR.
 branding:
   icon: refresh-cw
-  color: blue
+  color: gray-dark
 
 inputs:
   github-token:
@@ -114,8 +114,6 @@ runs:
         prompt: ${{ steps.claude-prompt.outputs.CLAUDE_PROMPT }}
         allowed_tools: "Read,Write,Edit,Glob,Grep,Bash(npm run *,pnpm run *,yarn *,npx *,ls *,find *,cat *)"
         max_turns: "10"
-        plugin_marketplaces: "medusajs/medusa-agent-skills"
-        plugins: "medusa-dev@medusa"
 
     # ── Step 4: Re-run build after Claude ────────────────────────────────
     - name: Setup Node.js (re-run build)
