@@ -2,11 +2,22 @@ import * as core from "@actions/core";
 import { detectSetup } from "./utils/detect-setup.js";
 
 // ncu opens HTTP connections to the npm registry. When they're aborted during
-// cleanup after the build runs, Node.js emits an unhandled 'error' event with
-// ECONNRESET. These are harmless — ignore them.
+// cleanup after the build runs, Node.js can emit unhandled 'error' events or
+// unhandled rejections with ECONNRESET / "aborted". These are harmless — ignore them.
+function isNcuNetworkNoise(err: unknown): boolean {
+  const e = err as NodeJS.ErrnoException;
+  return e.code === "ECONNRESET" || e.message === "aborted";
+}
+
 process.on("uncaughtException", (err: NodeJS.ErrnoException) => {
-  if (err.code === "ECONNRESET") return;
+  if (isNcuNetworkNoise(err)) return;
   core.setFailed(`Uncaught error: ${err}`);
+  process.exit(1);
+});
+
+process.on("unhandledRejection", (reason: unknown) => {
+  if (isNcuNetworkNoise(reason)) return;
+  core.setFailed(`Unhandled rejection: ${reason}`);
   process.exit(1);
 });
 
