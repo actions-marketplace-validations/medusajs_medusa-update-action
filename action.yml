@@ -73,7 +73,7 @@ runs:
 
     - name: Install action dependencies
       shell: bash
-      run: yarn install --frozen-lockfile
+      run: yarn install --immutable
       working-directory: ${{ github.action_path }}
 
     # ── Step 1: Detect, update, fetch release notes, build ───────────────

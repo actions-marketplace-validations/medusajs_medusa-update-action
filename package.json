@@ -4,6 +4,7 @@
   "description": "GitHub Action to automatically update @medusajs/* packages and open a PR",
   "private": true,
   "type": "module",
+  "packageManager": "yarn@4.13.0",
   "scripts": {
     "build": "tsc --noEmit",
     "test": "node --experimental-vm-modules node_modules/.bin/jest"
