@@ -73,7 +73,7 @@ runs:
 
     - name: Install action dependencies
       shell: bash
-      run: yarn install --frozen-lockfile
+      run: yarn install --immutable
       working-directory: ${{ github.action_path }}
 
     # ── Step 1: Detect, update, fetch release notes, build ───────────────
@@ -86,7 +86,7 @@ runs:
         BRANCH_PREFIX: ${{ inputs.branch-prefix }}
         TARGET_VERSION: ${{ inputs.target-version }}
         GH_TOKEN: ${{ inputs.create-pr != 'false' && inputs.github-token || '' }}
-      run: npx tsx ${{ github.action_path }}/src/index.ts
+      run: ${{ github.action_path }}/node_modules/.bin/tsx ${{ github.action_path }}/src/index.ts
 
     # ── Step 2: Build Claude prompt ──────────────────────────────────────
     - name: Build Claude prompt
@@ -102,7 +102,7 @@ runs:
         BUILD_EXIT_CODE: ${{ steps.setup.outputs.BUILD_EXIT_CODE }}
         PACKAGE_MANAGER: ${{ steps.setup.outputs.PACKAGE_MANAGER }}
         BUILD_SCRIPT_NAME: ${{ steps.setup.outputs.BUILD_SCRIPT_NAME }}
-      run: npx tsx ${{ github.action_path }}/src/build-claude-prompt.ts
+      run: ${{ github.action_path }}/node_modules/.bin/tsx ${{ github.action_path }}/src/build-claude-prompt.ts
 
     # ── Step 3: Run Claude Code ──────────────────────────────────────────
     - name: Run Claude Code
@@ -114,6 +114,7 @@ runs:
         prompt: ${{ steps.claude-prompt.outputs.CLAUDE_PROMPT }}
         allowed_tools: "Read,Write,Edit,Glob,Grep,Bash(npm run *,pnpm run *,yarn *,npx *,ls *,find *,cat *)"
         max_turns: "10"
+        model: claude-sonnet-4-6
 
     # ── Step 4: Re-run build after Claude ────────────────────────────────
     - name: Setup Node.js (re-run build)
@@ -131,7 +132,7 @@ runs:
         WORKING_DIRECTORY: ${{ inputs.working-directory }}
         PACKAGE_MANAGER: ${{ steps.setup.outputs.PACKAGE_MANAGER }}
         BUILD_SCRIPT_NAME: ${{ steps.setup.outputs.BUILD_SCRIPT_NAME }}
-      run: npx tsx ${{ github.action_path }}/src/build-check.ts
+      run: ${{ github.action_path }}/node_modules/.bin/tsx ${{ github.action_path }}/src/build-check.ts
 
     # ── Step 5: Determine build status ──────────────────────────────────
     - name: Set build status
@@ -201,7 +202,7 @@ runs:
         CLAUDE_FIX_STATUS: ${{ steps.set-build-status.outputs.CLAUDE_FIX_STATUS }}
         CLAUDE_CONFIGURED: ${{ inputs.anthropic-api-key != '' && 'true' || 'false' }}
         UPDATE_BRANCH: ${{ steps.commit.outputs.UPDATE_BRANCH }}
-      run: npx tsx ${{ github.action_path }}/src/create-pr.ts
+      run: ${{ github.action_path }}/node_modules/.bin/tsx ${{ github.action_path }}/src/create-pr.ts
 
     # ── Step 8: Report telemetry ─────────────────────────────────────────
     - name: Report telemetry
@@ -220,4 +221,4 @@ runs:
         BUILD_STATUS: ${{ steps.set-build-status.outputs.STATUS }}
         PR_URL: ${{ steps.create-pr.outputs.PR_URL }}
         ACTION_FAILED: ${{ job.status == 'failure' && 'true' || 'false' }}
-      run: npx tsx ${{ github.action_path }}/src/report-telemetry.ts
+      run: ${{ github.action_path }}/node_modules/.bin/tsx ${{ github.action_path }}/src/report-telemetry.ts
